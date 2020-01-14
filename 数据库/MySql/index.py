@@ -4,6 +4,7 @@
 
 import mysql.connector
 
+
 cnx=mysql.connector.connect(user='root',password='mysql@123',database='share')
 cursor=cnx.cursor()
 
