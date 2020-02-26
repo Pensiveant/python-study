@@ -54,16 +54,16 @@ def getVideoThumbnail(inputFile, imageName, imageResolution):
     return compressCommmand
 
 
-# inputDir = input('输入要转换的视频文件夹地址:')
-# outputDir = input('输入要输出的文件夹目录地址:')
-# videoHeight = input('输入要输出的视频分辨率(示例：1080):')
-# imageResolution = input('输入要输出的缩略图的分辨率（格式：320:240）:')
-# checkInputValues(inputDir,outputDir,videoHeight,imageResolution)
+inputDir = input('输入要转换的视频文件夹地址:')
+outputDir = input('输入要输出的文件夹目录地址:')
+videoHeight = input('输入要输出的视频分辨率(示例：1080):')
+imageResolution = input('输入要输出的缩略图的分辨率（格式：320:240）:')
+checkInputValues(inputDir,outputDir,videoHeight,imageResolution)
 print('开始压缩文件.....')
-inputDir = 'D:\\pensiveant\lab\\ffmpeg\\beibei'
-outputDir = 'D:\\pensiveant\lab\\ffmpeg\\beibei\\output'
-videoHeight = '1080'
-imageResolution = '320:240'
+# inputDir = 'D:\\pensiveant\lab\\ffmpeg\\beibei'
+# outputDir = 'D:\\pensiveant\lab\\ffmpeg\\beibei\\output'
+# videoHeight = '1080'
+# imageResolution = '320:240'
 
 # 获取输入的文件路径下的文件path
 pathList = []
