@@ -1,37 +1,11 @@
 import requests
-import csv
+from bs4 import BeautifulSoup
 
-year=input('输入年份:')
-r=input('input r:')
-condition={
-    'max':10,
-    'type':'c',
-    'freq':'A',
-    'px':'HS',
-    'ps':year,
-    'r':r,
-    'p':0,
-    'rg':2,
-    'cc':'AG6',
-    'uitoken':'19774f13ca46af6f08d0975e91ec9cd3'
-}
-r=requests.get('https://comtrade.un.org/api/get',condition)
-
-if r.status_code==200:
-    response=r.json()
-else:
-    print('请求失败')
-
-
-# 写到CSV中
-data=response['dataset']
-csvfile=open('test.csv','w',newline='')
-writer = csv.writer(csvfile)
-keys=data[0].keys()
-writer.writerow(tuple(keys))
-
-csvData=[]
-for item in data:
-    csvData.append(item.values())
-writer.writerows(csvData)
-csvfile.close()
+requestUrl='https://www.pexels.com/zh-cn/'
+headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'}
+request=requests.get(requestUrl,headers=headers)
+request.encoding='utf-8'
+html=request.text
+bf=BeautifulSoup(html,'lxml')
+divTag=bf.find_all('div')
+print(bf.prettify())
