@@ -2,25 +2,45 @@ from PyRadar import Radar
 from PyRadar import ppi
 import laspy 
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # 空间三维画图
+from scipy.interpolate import griddata
 
 k = Radar(r'D:\pensiveant\github\python-study\radar', '\Z_RADR_I_Z9230_20200601190600_O_DOR_SA_CAP.bin')  
 
 
-# hdr = laspy.header.Header(file_version=1.4, point_format=7)
-# xyz
-# mins  = np.floor(np.min(xyz, axis=1))
-# hdr.offset = mins
-# hdr.scale = [0.01,0.01,0.01]
-# outfile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\radar.las', mode="w", header=hdr)
-# outfile.x = k.x
-# outfile.y = k.y
-# outfile.z = k.z
-# outfile.Red = 255
-# outfile.Green = 255
-# outfile.Blue = 255
-# outfile.Intensity = k.r
-# outfile.classification = 'clound'
-# outfile.close()
+
+
+# # 绘制散点图
+# fig = plt.figure()
+# ax = Axes3D(fig)
+# ax.scatter(k.x[0:1500], k.y[0:1500], k.z[0:1500])
+ 
+ 
+# # 添加坐标轴(顺序是Z, Y, X)
+# ax.set_zlabel('Z', fontdict={'size': 15, 'color': 'red'})
+# ax.set_ylabel('Y', fontdict={'size': 15, 'color': 'red'})
+# ax.set_xlabel('X', fontdict={'size': 15, 'color': 'red'})
+# plt.show()
+
+hdr = laspy.header.Header(file_version=1.4, point_format=7)
+outfile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\radar.las', mode="w", header=hdr)
+xmin = np.floor(np.min(k.x))
+ymin = np.floor(np.min(k.y))
+zmin = np.floor(np.min(k.z))
+outfile.header.offset = [xmin,ymin,zmin]
+outfile.header.scale = [0.001,0.001,0.001]
+outfile.X = k.x
+outfile.Y = k.y
+outfile.Z = k.z
+outfile.red= [255 for i in range(0, k.x.size)]
+outfile.green= [0 for i in range(0, k.x.size)]
+outfile.blue= [0 for i in range(0, k.x.size)]
+outfile.intensity = k.r
+outfile.classification=[11 for i in range(0, k.x.size)]
+outfile.classification_flags=[11 for i in range(0, k.x.size)]
+outfile.pt_src_id=[i for i in range(0, k.x.size)]
+outfile.close()
 
 
 
@@ -60,3 +80,32 @@ k = Radar(r'D:\pensiveant\github\python-study\radar', '\Z_RADR_I_Z9230_202006011
 
 
 # ppi(r'D:\pensiveant\github\python-study\radar\Z_RADR_I_Z9230_20200601190100_O_DOR_SA_CAP.bin')  # 快速绘制0.5度仰角ppi图像，大概5秒一张
+
+# def grid(self):
+#     GRID_RESOLUTION = 500  # 网格分辨率，可修改
+        
+#     x, y, z, r = self.x, self.y, self.z, self.r
+#     grid_x, grid_y, grid_z = np.mgrid[min(x):max(x):GRID_RESOLUTION*1j, min(y):max(y):GRID_RESOLUTION*1j, min(z):max(z):GRID_RESOLUTION*1j]  # 构建三维网格，方形，体绘制适用
+        
+#     x = x[np.newaxis,:]
+#     y = y[np.newaxis,:]
+#     z = z[np.newaxis,:]
+        
+#     points = np.concatenate((x,y,z),axis=0).T
+        
+#     grid_r = griddata(points, r, (grid_x, grid_y, grid_z), method = 'nearest')  # 返回结果，三维数组
+
+#     hdr = laspy.header.Header(file_version=1.4, point_format=7)
+#     outfile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\radar.las', mode="w", header=hdr)
+#     xmin = np.floor(np.min(grid_x.ravel()))
+#     ymin = np.floor(np.min(grid_y.ravel()))
+#     zmin = np.floor(np.min(grid_z.ravel()))
+#     outfile.header.offset = [xmin,ymin,zmin]
+#     outfile.header.scale = [0.001,0.001,0.001]
+#     outfile.x = np.array(grid_x.ravel())
+#     outfile.y = np.array(grid_y.ravel())
+#     outfile.z = np.array(grid_z.ravel())
+#     outfile.Intensity = grid_r.ravel()
+#     outfile.close()
+
+# grid(k)

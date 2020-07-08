@@ -18,6 +18,7 @@ class Radar:
         self.NumberOfElevation = [self.RawArray[i][44] + self.RawArray[i][45] * 256 for i in range(0, self.Count)]  # 层数
         self.Azimuth = [(self.RawArray[i][36] + 256 * self.RawArray[i][37]) / 8 * 180 / 4096 for i in range(0, self.Count)]  # 方位角
         self.Elevation = [(self.RawArray[i][42] + 256 * self.RawArray[i][43]) / 8 * 180 / 4096 for i in range(0, self.Count)]  # 仰角
+        # self.ElevationNum = [(self.RawArray[i][44] + 256 * self.RawArray[i][45]) for i in range(0, self.Count)]  # 仰角数
         self.StartOfReflectivity = [self.RawArray[i][46] + self.RawArray[i][47] * 256 for i in range(0, self.Count)]  # 起始距离
         self.StartOfSpeed = [self.RawArray[i][48] + self.RawArray[i][49] * 256 for i in range(0, self.Count)]
         self.StepOfReflectivity = [self.RawArray[i][50] + self.RawArray[i][51] * 256 for i in range(0, self.Count)]  # 库长
@@ -35,7 +36,7 @@ class Radar:
         self.AllInfo = self.getAllInfo()
         self.space_info = self.get_space_info()
         self.elevation_list = self.get_elevation_list()
-        self.grid_data = self.grid()
+        # self.grid_data = self.grid()
 
     def getStorage(self):
         Storage = [[
@@ -256,6 +257,7 @@ class Radar:
         points = mlab.points3d(x, y, z, r, colormap = 'jet', scale_factor=.25)
         mlab.show()
 
+    # 数据标准格网化处理
     def grid(self):
         GRID_RESOLUTION = 500  # 网格分辨率，可修改
         
