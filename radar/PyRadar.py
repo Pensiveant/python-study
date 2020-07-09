@@ -16,6 +16,7 @@ class Radar:
         self.Count = int(len(self.RawData) / 2432) # 3998
         self.RawArray = self.RawData.reshape(self.Count, 2432) # 每2432个字节分为一个数组
         self.NumberOfElevation = [self.RawArray[i][44] + self.RawArray[i][45] * 256 for i in range(0, self.Count)]  # 层数
+        self.Time = [(self.RawArray[i][32] + 256 * self.RawArray[i][33]) for i in range(0, self.Count)]  # 儒略日时间
         self.Azimuth = [(self.RawArray[i][36] + 256 * self.RawArray[i][37]) / 8 * 180 / 4096 for i in range(0, self.Count)]  # 方位角
         self.Elevation = [(self.RawArray[i][42] + 256 * self.RawArray[i][43]) / 8 * 180 / 4096 for i in range(0, self.Count)]  # 仰角
         # self.ElevationNum = [(self.RawArray[i][44] + 256 * self.RawArray[i][45]) for i in range(0, self.Count)]  # 仰角数

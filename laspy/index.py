@@ -1,7 +1,7 @@
 import laspy 
 import pandas as pd
-lazFile=laspy.file.File(r'D:\pensiveant\github\python-study\laspy\20120414_002130.laz', mode="r")
-# lazFile=laspy.file.File(r'D:\pensiveant\github\python-study\laspy\radar.las', mode="r")
+# lazFile=laspy.file.File(r'D:\pensiveant\github\python-study\laspy\20120414_002130.laz', mode="r")
+lazFile=laspy.file.File(r'D:\pensiveant\github\python-study\laspy\radar.las', mode="r")
 scale=lazFile.header.scale
 offset=lazFile.header.offset
 x=lazFile.x

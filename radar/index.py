@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # 空间三维画图
 from scipy.interpolate import griddata
+import copy
 
 k = Radar(r'D:\pensiveant\github\python-study\radar', '\Z_RADR_I_Z9230_20200601190600_O_DOR_SA_CAP.bin')  
 
@@ -23,23 +24,44 @@ k = Radar(r'D:\pensiveant\github\python-study\radar', '\Z_RADR_I_Z9230_202006011
 # ax.set_xlabel('X', fontdict={'size': 15, 'color': 'red'})
 # plt.show()
 
-hdr = laspy.header.Header(file_version=1.4, point_format=7)
-outfile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\radar.las', mode="w", header=hdr)
+# hdr = laspy.header.Header(file_version=1.4, point_format=7)
+# outfile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\radar.las', mode="w", header=hdr)
+
+inFile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\20120414_002130.laz',mode= "r")
+new_header = copy.copy(inFile.header)
+# new_header.format = 1.4
+# new_header.pt_dat_format_id = 7
+outfile = laspy.file.File(r'D:\pensiveant\github\python-study\radar\radar.las', mode= "w",vlrs = inFile.header.vlrs, header = new_header)
+
 xmin = np.floor(np.min(k.x))
+xmax=np.floor(np.max(k.x))
 ymin = np.floor(np.min(k.y))
+ymax=np.floor(np.max(k.y))
 zmin = np.floor(np.min(k.z))
-outfile.header.offset = [xmin,ymin,zmin]
-outfile.header.scale = [0.001,0.001,0.001]
+zmax=np.floor(np.max(k.z))
+
+# 设置公共头部块
+# outfile.header.offset = [xmin,ymin,zmin]
+# outfile.header.scale = [1.00,1.00,1.00]
+outfile.header.max=[xmax,ymax,zmax]
+outfile.header.min= [xmin,ymin,zmin]
+# outfile.header.vlr=laspy.header.VLR('LASF_Projection','2112',)
+
 outfile.X = k.x
 outfile.Y = k.y
 outfile.Z = k.z
-outfile.red= [255 for i in range(0, k.x.size)]
-outfile.green= [0 for i in range(0, k.x.size)]
-outfile.blue= [0 for i in range(0, k.x.size)]
+# outfile.red= [255 for i in range(0, k.x.size)]
+# outfile.green= [0 for i in range(0, k.x.size)]
+# outfile.blue= [0 for i in range(0, k.x.size)]
 outfile.intensity = k.r
-outfile.classification=[11 for i in range(0, k.x.size)]
-outfile.classification_flags=[11 for i in range(0, k.x.size)]
-outfile.pt_src_id=[i for i in range(0, k.x.size)]
+outfile.flag_byte = [100 for i in range(0, k.x.size)]
+outfile.raw_classification = [11 for i in range(0, k.x.size)]
+outfile.user_data = [0 for i in range(0, k.x.size)]
+outfile.pt_src_id = [10507 for i in range(0, k.x.size)]
+outfile.gps_time = [18478084.36583805 for i in range(0, k.x.size)]
+# outfile.classification=[11 for i in range(0, k.x.size)]
+# outfile.classification_flags=[11 for i in range(0, k.x.size)]
+# outfile.pt_src_id=[i for i in range(0, k.x.size)]
 outfile.close()
 
 
