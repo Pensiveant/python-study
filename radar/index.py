@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # 空间三维画图
 from scipy.interpolate import griddata
 import copy
+import pandas as pd 
 
 k = Radar(r'D:\pensiveant\github\python-study\radar', '\Z_RADR_I_Z9230_20200601190600_O_DOR_SA_CAP.bin')  
 
@@ -47,18 +48,29 @@ outfile.header.max=[xmax,ymax,zmax]
 outfile.header.min= [xmin,ymin,zmin]
 # outfile.header.vlr=laspy.header.VLR('LASF_Projection','2112',)
 
-outfile.X = k.x
-outfile.Y = k.y
-outfile.Z = k.z
+
+# 去除反射率为0的数据
+radarData=pd.DataFrame({
+    'x':pd.Series(k.x),
+    'y':pd.Series(k.y),
+    'z':pd.Series(k.z),
+    'r':pd.Series(k.r)
+})
+radarData = radarData.drop(radarData[radarData.r ==0].index)
+radarData.to_csv("radarData1.csv")
+outfile.X = radarData['x'].values
+outfile.Y = radarData['y'].values
+outfile.Z = radarData['z'].values
+outfile.intensity = radarData['r'].values
+
 # outfile.red= [255 for i in range(0, k.x.size)]
 # outfile.green= [0 for i in range(0, k.x.size)]
 # outfile.blue= [0 for i in range(0, k.x.size)]
-outfile.intensity = k.r
-outfile.flag_byte = [100 for i in range(0, k.x.size)]
-outfile.raw_classification = [11 for i in range(0, k.x.size)]
-outfile.user_data = [0 for i in range(0, k.x.size)]
-outfile.pt_src_id = [10507 for i in range(0, k.x.size)]
-outfile.gps_time = [18478084.36583805 for i in range(0, k.x.size)]
+outfile.flag_byte = [100 for i in range(0, len(radarData['x'].values))]
+outfile.raw_classification = [11 for i in range(0,len(radarData['x'].values))]
+outfile.user_data = [0 for i in range(0, len(radarData['x'].values))]
+outfile.pt_src_id = [10507 for i in range(0,len(radarData['x'].values))]
+outfile.gps_time = [18478084.36583805 for i in range(0, len(radarData['x'].values))]
 # outfile.classification=[11 for i in range(0, k.x.size)]
 # outfile.classification_flags=[11 for i in range(0, k.x.size)]
 # outfile.pt_src_id=[i for i in range(0, k.x.size)]

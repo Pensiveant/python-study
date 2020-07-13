@@ -59,8 +59,27 @@ import numpy as np
 # print(x.flags) # x.flags.C_CONTIGUOUS=true
 
 
-# numpy.asmatrix(data, dtype=None)
+# # numpy.asmatrix(data, dtype=None)
 
-x=np.array([[1,2],[3,4]])
-m=np.asmatrix(x)
-print(m)
+# x=np.array([[1,2],[3,4]])
+# m=np.asmatrix(x)
+# print(m)
+
+# # numpy.arange([start, ]stop, [step, ]dtype=None)
+# arange=np.arange(1,10)
+# print(arange)
+
+
+# # numpy.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0)
+# samples,step=np.linspace(2,10,4,retstep=True)
+# samples1=np.linspace([1,3],[8,10],4,axis=1)
+# print(samples1)
+
+# # numpy.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0)
+# samples=np.logspace(2,10,4)
+# print(samples)
+
+
+# numpy.geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0)
+samples=np.geomspace(2,10,4)
+print(samples)
