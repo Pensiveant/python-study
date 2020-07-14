@@ -20,13 +20,6 @@ import numpy as np
 # df1=pd.DataFrame(listDict,index=['a','b','c','d'])
 # print(df1)
 
-# tupleDict={
-#     'one':(1.,2.,3.,4.), # 默认索引为0,1,2,3...
-#     'two':(4.,3.,2.,1.)
-# }
-# df10=pd.DataFrame(tupleDict,index=['a','b','c','d'])
-# print(df10)
-
 # ndarrayDic={
 #     'one':np.array([1,2,3,4]), # 默认索引为0,1,2,3...
 #     'two':np.array([7,8,9,10]),
@@ -40,6 +33,20 @@ import numpy as np
 #     }
 # df3=pd.DataFrame(dictDict)
 # print(df3)
+
+# tupleDict={
+#     'one':(1.,2.,3.,4.), # 默认索引为0,1,2,3...
+#     'two':(4.,3.,2.,1.)
+# }
+# df10=pd.DataFrame(tupleDict,index=['a','b','c','d'])
+# print(df10)
+
+# constantsDic={
+#         'one':10,
+#         'two':20
+# }
+# df11=pd.DataFrame(constantsDic,index=['a','b','c','d'])
+# print(df11)
 
 
 # # 列表：每个元素为Series或列表或同长度的一维ndarray对象或字典，代表一行
