@@ -233,9 +233,9 @@ import numpy as np
 # print(s[s>0]) # 只返回选中的行
 # print(s.where(s>0)) # 返回相同形状的Series
 
-# where接收other参数，用于替换条件未False的值
-dates=pd.date_range('1/1/2000',periods=8)
-df=pd.DataFrame(np.random.randn(8,4),index=dates,columns=['A','B','C','D'])
+# # where接收other参数，用于替换条件未False的值
+# dates=pd.date_range('1/1/2000',periods=8)
+# df=pd.DataFrame(np.random.randn(8,4),index=dates,columns=['A','B','C','D'])
 # print(df[df<0])
 # print(df.where(df<0,-df))
 
@@ -257,6 +257,25 @@ df=pd.DataFrame(np.random.randn(8,4),index=dates,columns=['A','B','C','D'])
 # df2[df2[1:4]>0]=3
 # print(df2)
 
-df2=df.copy()
-df2.where(df2>0,df2['A'],axis='index')
-print(df2)
+# df2=df.copy()
+# df2.where(df2>0,df2['A'],axis='index')
+# print(df2)
+
+# # mask
+# print(s.mask(s>=0)) # 每项>=0时，替换
+# print(df.mask(df>=0)) # 每项>=0时，替换
+
+# --------------- The query() Method ---------------
+# n=10
+# df=pd.DataFrame(np.random.rand(n,3),columns=list('abc'))
+# print(df)
+# result=df[(df['a']<df['b'])&(df['b']<df['c'])]
+# print(result)
+# queryResult=df.query('(a<b)&(b<c)')
+# print(queryResult)
+
+n=10
+df = pd.DataFrame(np.random.randint(n / 2, size=(n, 2)), columns=list('bc'))
+df.index.name='a'
+print(df)
+print(df.query('a<b and b<c'))
