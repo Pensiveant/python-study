@@ -1,1 +1,1 @@
-print('string'*8)
+print('Ni'*8)
