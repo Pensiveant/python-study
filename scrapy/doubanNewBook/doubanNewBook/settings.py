@@ -18,7 +18,7 @@ NEWSPIDER_MODULE = 'doubanNewBook.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'doubanNewBook (+http://www.yourdomain.com)'
 
-USER_AGENT='Mozilla/5.0'
+USER_AGENT = 'Mozilla/5.0'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
@@ -40,33 +40,34 @@ ROBOTSTXT_OBEY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+# DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-#}
+# }
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
+# SPIDER_MIDDLEWARES = {
 #    'doubanNewBook.middlewares.DoubannewbookSpiderMiddleware': 543,
-#}
+# }
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
+# DOWNLOADER_MIDDLEWARES = {
 #    'doubanNewBook.middlewares.DoubannewbookDownloaderMiddleware': 543,
-#}
+# }
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
+# EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# }
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+# 激活item pipelines设置
 ITEM_PIPELINES = {
-   'doubanNewBook.pipelines.DoubannewbookPipeline': 300,
+    'doubanNewBook.pipelines.SaveToMySqlPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -89,3 +90,12 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# mysql设置
+MYSQL_CONFIG = {
+    'user': 'root',
+    'password': 'mysql@123',
+    'host': '127.0.0.1',
+    'database': 'scrapy',
+    'raise_on_warnings': True
+}

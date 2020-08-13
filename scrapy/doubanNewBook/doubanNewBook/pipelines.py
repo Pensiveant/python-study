@@ -8,22 +8,25 @@ import mysql.connector
 import logging
 
 
-class DoubannewbookPipeline(object):
+class SaveToMySqlPipeline(object):
+
+    def __init__(self, mysqlConfig):
+        self.mysqlConfig = mysqlConfig
+    
+    # 类方法，读取MySQL数据库配置
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(mysqlConfig=crawler.settings.get('MYSQL_CONFIG'))
+    
     def open_spider(self, spider):
-        config = {
-            'user': 'root',
-                    'password': 'mysql@123',
-                    'host': '127.0.0.1',
-                    'database': 'scrapy',
-                    'raise_on_warnings': True
-        }
-        self.conn = mysql.connector.connect(**config)
+        self.conn = mysql.connector.connect(**self.mysqlConfig)
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
-        self.cursor.execute('INSERT INTO doubannewbook (name,star,author,publisher,publishtime,description) VALUES (%s,%s,%s,%s,%s,%s)',(item['name'], item['star'], item['author'], item['publisher'], item['publishTime'], item['description']))
+        self.cursor.execute('INSERT INTO doubannewbook (name,star,author,publisher,publishtime,description) VALUES (%s,%s,%s,%s,%s,%s)',
+                            (item['name'], item['star'], item['author'], item['publisher'], item['publishTime'], item['description']))
         self.conn.commit()
-       
-    def close_spider(self,item, spider):
+
+    def close_spider(self, item, spider):
         self.conn.close()  # 关闭连接
         yield item
