@@ -1,6 +1,7 @@
 {
     // "python.pythonPath": "D:\\program\\Anaconda\\python.exe",
-    "python.pythonPath": "D:\\program\\Anaconda\\envs\\webSpider\\python.exe",
+    // "python.pythonPath": "D:\\program\\Anaconda\\envs\\webSpider\\python.exe",
+    "python.pythonPath": "D:\\program\\Anaconda\\envs\\Image\\python.exe",
     // "python.pythonPath": "D:\\program\\Anaconda\\envs\\radar\\python.exe",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
