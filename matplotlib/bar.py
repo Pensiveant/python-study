@@ -40,7 +40,6 @@ def autolabel(rects):
                     textcoords="offset points",
                     ha='center', va='bottom')
 
-
 autolabel(rects1)
 autolabel(rects2)
 
