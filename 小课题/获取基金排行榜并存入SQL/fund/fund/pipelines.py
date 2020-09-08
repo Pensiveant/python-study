@@ -12,7 +12,7 @@ import mysql.connector
 class SaveToCsvPipeline(object):
 
     def open_spider(self, spider):
-        csvfile = open(r'./fund.csv', 'w', encoding='utf-8-sig')
+        csvfile = open(r'./fund.csv', 'w', encoding='utf-8-sig',newline='') # newline='' 解决空行问题
         self.csv_writer = csv.writer(csvfile)
         # 写入头部
         self.csv_writer.writerow(
