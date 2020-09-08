@@ -94,8 +94,9 @@ DEFAULT_REQUEST_HEADERS = {
 FEED_EXPORT_ENCODING = 'utf-8-sig'  # 解决CSV中文乱码
 # 激活item pipelines设置
 ITEM_PIPELINES = {
-    'fund.pipelines.SaveToCsvPipeline': 300,
-    # 'fund.pipelines.SaveToMySQLPipeline':200
+    # 'fund.pipelines.SaveToCsvPipeline': 300,
+    # 'fund.pipelines.SaveToMySQLPipeline':200,
+    'fund.pipelines.AsynSaveToMySQLPipeline':100
 }
 
 # mysql设置

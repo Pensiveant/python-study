@@ -7,12 +7,14 @@
 
 import csv
 import mysql.connector
+from twisted.enterprise import adbapi
 
 
 class SaveToCsvPipeline(object):
 
     def open_spider(self, spider):
-        csvfile = open(r'./fund.csv', 'w', encoding='utf-8-sig',newline='') # newline='' 解决空行问题
+        csvfile = open(r'./fund.csv', 'w', encoding='utf-8-sig',
+                       newline='')  # newline='' 解决空行问题
         self.csv_writer = csv.writer(csvfile)
         # 写入头部
         self.csv_writer.writerow(
@@ -47,12 +49,51 @@ class SaveToMySQLPipeline(object):
     def process_item(self, item, spider):
         self.cursor.execute('INSERT INTO fundRanking (code, name, date, netAssetValue, accumulativeTotalTetValue, dailyGrowthRate, weekGrowthRate, oneMothGrowthRate, threeMothGrowthRate, sixMothGrowthRate, oneYearGrowthRate, twoYearGrowthRate,threeYearGrowthRate, nowYearGrowthRate, setUpGrowthRate,customGrowthRate, serviceChargeRate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
                             (item['code'], item['name'], item['date'], item['netAssetValue'], item['accumulativeTotalTetValue'],
-                                  item['dailyGrowthRate'], item['weekGrowthRate'], item['oneMothGrowthRate'], item['threeMothGrowthRate'],
-                                  item['sixMothGrowthRate'], item['oneYearGrowthRate'], item[
-                                      'twoYearGrowthRate'], item['threeYearGrowthRate'], item['nowYearGrowthRate'],
-                                  item['setUpGrowthRate'], item['customGrowthRate'], item['serviceChargeRate']))
+                             item['dailyGrowthRate'], item['weekGrowthRate'], item['oneMothGrowthRate'], item['threeMothGrowthRate'],
+                             item['sixMothGrowthRate'], item['oneYearGrowthRate'], item[
+                                'twoYearGrowthRate'], item['threeYearGrowthRate'], item['nowYearGrowthRate'],
+                             item['setUpGrowthRate'], item['customGrowthRate'], item['serviceChargeRate']))
         self.conn.commit()
 
     def close_spider(self, item, spider):
         self.conn.close()  # 关闭连接
         yield item
+
+
+# 参考：https://blog.csdn.net/loner_fang/article/details/81056191
+class AsynSaveToMySQLPipeline(object):
+
+    def __init__(self, dbpool):
+        self.dbpool = dbpool
+
+    @classmethod
+    def from_settings(cls, settings):
+        # 连接数据池ConnectionPool，使用pymysql或者Mysqldb连接
+        dbpool = adbapi.ConnectionPool(
+            'mysql.connector', **settings['MYSQL_CONFIG'])
+        # 返回实例化参数
+        return cls(dbpool)
+
+    def process_item(self, item, spider):
+        """
+        使用twisted将MySQL插入变成异步执行。通过连接池执行具体的sql操作，返回一个对象
+        """
+        query = self.dbpool.runInteraction(self.do_insert, item)  # 指定操作方法和操作数据
+        # 添加异常处理
+        query.addCallback(self.handle_error)  # 处理异常
+
+    def do_insert(self, cursor, item):
+        # 对数据库进行插入操作，并不需要commit，twisted会自动commit
+        insert_sql = """
+       INSERT INTO fundRanking (code, name, date, netAssetValue, accumulativeTotalTetValue, dailyGrowthRate, weekGrowthRate, oneMothGrowthRate, threeMothGrowthRate, sixMothGrowthRate, oneYearGrowthRate, twoYearGrowthRate,threeYearGrowthRate, nowYearGrowthRate, setUpGrowthRate,customGrowthRate, serviceChargeRate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    """
+        cursor.execute(insert_sql, (item['code'], item['name'], item['date'], item['netAssetValue'], item['accumulativeTotalTetValue'],
+                                    item['dailyGrowthRate'], item['weekGrowthRate'], item['oneMothGrowthRate'], item['threeMothGrowthRate'],
+                                    item['sixMothGrowthRate'], item['oneYearGrowthRate'], item[
+            'twoYearGrowthRate'], item['threeYearGrowthRate'], item['nowYearGrowthRate'],
+            item['setUpGrowthRate'], item['customGrowthRate'], item['serviceChargeRate']))
+
+    def handle_error(self, failure):
+        if failure:
+            # 打印错误信息
+            print(failure)
