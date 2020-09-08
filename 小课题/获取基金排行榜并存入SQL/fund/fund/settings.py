@@ -95,4 +95,14 @@ FEED_EXPORT_ENCODING = 'utf-8-sig'  # 解决CSV中文乱码
 # 激活item pipelines设置
 ITEM_PIPELINES = {
     'fund.pipelines.SaveToCsvPipeline': 300,
+    'fund.pipelines.SaveToMySQLPipeline':200
+}
+
+# mysql设置
+MYSQL_CONFIG = {
+    'user': 'root',
+    'password': 'mysql@123',
+    'host': '127.0.0.1',
+    'database': 'fund',
+    'raise_on_warnings': True
 }
