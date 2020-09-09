@@ -32,10 +32,14 @@ class SaveToCsvPipeline(object):
     def close_spider(self, item, spider):
         yield item
 
+# 同步，事务加批量写入
+# 参考：https://www.jb51.net/article/133144.htm
+
 
 class SaveToMySQLPipeline(object):
     def __init__(self, mysqlConfig):
         self.mysqlConfig = mysqlConfig
+        self.items = []
 
     # 类方法，读取MySQL数据库配置
     @classmethod
@@ -47,17 +51,35 @@ class SaveToMySQLPipeline(object):
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
-        self.cursor.execute('INSERT INTO fundRanking (code, name, date, netAssetValue, accumulativeTotalTetValue, dailyGrowthRate, weekGrowthRate, oneMothGrowthRate, threeMothGrowthRate, sixMothGrowthRate, oneYearGrowthRate, twoYearGrowthRate,threeYearGrowthRate, nowYearGrowthRate, setUpGrowthRate,customGrowthRate, serviceChargeRate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
-                            (item['code'], item['name'], item['date'], item['netAssetValue'], item['accumulativeTotalTetValue'],
-                             item['dailyGrowthRate'], item['weekGrowthRate'], item['oneMothGrowthRate'], item['threeMothGrowthRate'],
-                             item['sixMothGrowthRate'], item['oneYearGrowthRate'], item[
-                                'twoYearGrowthRate'], item['threeYearGrowthRate'], item['nowYearGrowthRate'],
-                             item['setUpGrowthRate'], item['customGrowthRate'], item['serviceChargeRate']))
-        self.conn.commit()
+        self.items.append((item['code'], item['name'], item['date'], item['netAssetValue'], item['accumulativeTotalTetValue'],
+                           item['dailyGrowthRate'], item['weekGrowthRate'], item['oneMothGrowthRate'], item['threeMothGrowthRate'],
+                           item['sixMothGrowthRate'], item['oneYearGrowthRate'], item[
+            'twoYearGrowthRate'], item['threeYearGrowthRate'], item['nowYearGrowthRate'],
+            item['setUpGrowthRate'], item['customGrowthRate'], item['serviceChargeRate']))
 
-    def close_spider(self, item, spider):
+        # self.cursor.execute('INSERT INTO fundRanking (code, name, date, netAssetValue, accumulativeTotalTetValue, dailyGrowthRate, weekGrowthRate, oneMothGrowthRate, threeMothGrowthRate, sixMothGrowthRate, oneYearGrowthRate, twoYearGrowthRate,threeYearGrowthRate, nowYearGrowthRate, setUpGrowthRate,customGrowthRate, serviceChargeRate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+        #                     (item['code'], item['name'], item['date'], item['netAssetValue'], item['accumulativeTotalTetValue'],
+        #                      item['dailyGrowthRate'], item['weekGrowthRate'], item['oneMothGrowthRate'], item['threeMothGrowthRate'],
+        #                      item['sixMothGrowthRate'], item['oneYearGrowthRate'], item[
+        #                         'twoYearGrowthRate'], item['threeYearGrowthRate'], item['nowYearGrowthRate'],
+        #                      item['setUpGrowthRate'], item['customGrowthRate'], item['serviceChargeRate']))
+        # self.conn.commit()
+        return item
+
+    def close_spider(self, spider):
+        insert_sql = """
+         INSERT INTO fundRanking (code, name, date, netAssetValue, accumulativeTotalTetValue, dailyGrowthRate, weekGrowthRate, oneMothGrowthRate, threeMothGrowthRate, sixMothGrowthRate, oneYearGrowthRate, twoYearGrowthRate,threeYearGrowthRate, nowYearGrowthRate, setUpGrowthRate,customGrowthRate, serviceChargeRate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    """
+        insertItems = [self.items[i:i+20]
+                       for i in range(0, len(self.items), 20)]
+        transactionItems = [insertItems[i:i+20]
+                            for i in range(0, len(insertItems), 20)]
+        for item in transactionItems:
+            self.conn.start_transaction()
+            for index in range(len(item)):
+                self.cursor.executemany(insert_sql, tuple(item[index]))
+            self.conn.commit()
         self.conn.close()  # 关闭连接
-        yield item
 
 
 # 参考：https://blog.csdn.net/loner_fang/article/details/81056191
