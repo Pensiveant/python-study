@@ -7,8 +7,11 @@ matplotlib.rcParams['font.sans-serif'] = ['SimHei']
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 fig, bar = plt.subplots()
+
+# 标题
 bar.set_title('电影票房')
 
+# 轴刻度
 move_name = ['雷神3:诸神黄昏', '正义联盟', '东方快车谋杀案', '寻梦环游记',
              '全球风暴', '降魔传']
 bar.set_xticklabels(move_name)
@@ -17,6 +20,8 @@ bar.set_xticklabels(move_name)
 x = range(len(move_name))   
 y = [73853, 57767, 22354, 15969, 14839, 8725]
 rects = bar.bar(x, y, width=0.5,label='票房')
+
+# 图例
 bar.legend()
 
 # 在bar上面显示文本，值为其高度

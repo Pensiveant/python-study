@@ -7,9 +7,7 @@ import numpy as np
 fig, ax = plt.subplots()
 
 # 标题
-ax.set_title('Scores by group and gender')
-
-
+ax.set_title('Scores by group and gender',pad=20)
 
 # 坐标轴
 ax.set_ylabel('Scores')
@@ -39,10 +37,8 @@ def autolabel(rects):
                     xytext=(0, 3),  # 3 points vertical offset
                     textcoords="offset points",
                     ha='center', va='bottom')
-
 autolabel(rects1)
 autolabel(rects2)
 
 fig.tight_layout()
-
 plt.show()
