@@ -1,6 +1,6 @@
 {
-    "python.pythonPath": "D:\\program\\Anaconda\\python.exe",
-    // "python.pythonPath": "D:\\program\\Anaconda\\envs\\webSpider\\python.exe", // 爬虫学习
+    // "python.pythonPath": "D:\\program\\Anaconda\\python.exe",
+    "python.pythonPath": "D:\\program\\Anaconda\\envs\\webSpider\\python.exe", // 爬虫学习
     // "python.pythonPath": "D:\\program\\Anaconda\\envs\\Image\\python.exe",
     // "python.pythonPath": "D:\\program\\Anaconda\\envs\\radar\\python.exe",
     // "python.pythonPath": "D:\\program\\Anaconda\\envs\\chart\\python.exe",// 图表绘制库学习
