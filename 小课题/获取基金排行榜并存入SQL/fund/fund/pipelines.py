@@ -8,18 +8,21 @@
 import csv
 import mysql.connector
 from twisted.enterprise import adbapi
+import datetime
 
 
 class SaveToCsvPipeline(object):
 
     def open_spider(self, spider):
-        csvfile = open(r'./fund.csv', 'w', encoding='utf-8-sig',
+        nowDate=datetime.datetime.now().strftime("%Y%m%d")
+        filepath='fund{}.csv'.format(nowDate)
+        csvfile = open(filepath, 'w', encoding='utf-8-sig',
                        newline='')  # newline='' 解决空行问题
         self.csv_writer = csv.writer(csvfile)
         # 写入头部
         self.csv_writer.writerow(
-            ['code', 'name', 'date', 'netAssetValue', 'accumulativeTotalTetValue', 'dailyGrowthRate', 'weekGrowthRate', 'oneMothGrowthRate', 'threeMothGrowthRate', 'sixMothGrowthRate', 'oneYearGrowthRate', 'twoYearGrowthRate', 'threeYearGrowthRate', 'nowYearGrowthRate', 'setUpGrowthRate',
-             'customGrowthRate', 'serviceChargeRate'])
+            ['基金代码', '基金名称', '日期', '单位净值', '累计净值', '日增长率', '近一周增长率', '近一个月增长率', '近三个月增长率', '近六个月增长率', '近一年增长率', '近两年增长率', '近三年增长率', '今年以来增长率', '成立以来增长率',
+             '自定义增长率(当前日期向前推一年)', '手续费'])
 
     def process_item(self, item, spider):
 
