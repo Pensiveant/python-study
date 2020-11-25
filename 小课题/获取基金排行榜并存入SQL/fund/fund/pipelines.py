@@ -14,8 +14,10 @@ import datetime
 class SaveToCsvPipeline(object):
 
     def open_spider(self, spider):
-        nowDate=datetime.datetime.now().strftime("%Y%m%d")
-        filepath='fund{}.csv'.format(nowDate)
+        nowDate=datetime.datetime.now()
+        offset = datetime.timedelta(days=-1)
+        yesterday= (nowDate + offset).strftime("%Y%m%d")
+        filepath='fund{}.csv'.format(yesterday)
         csvfile = open(filepath, 'w', encoding='utf-8-sig',
                        newline='')  # newline='' 解决空行问题
         self.csv_writer = csv.writer(csvfile)
