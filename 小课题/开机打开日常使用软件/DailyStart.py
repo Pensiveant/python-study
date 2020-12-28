@@ -14,7 +14,6 @@ program=[
     r'D:\program\TIM\Bin\QQScLauncher.exe',  # qq
     r'D:\program\dingding\DingtalkLauncher.exe', # 钉钉
     r"C:\Program Files (x86)\Tencent\WeChat\WeChat.exe", # 微信
-    r"C:\Program Files (x86)\Microsoft\BingDesktop\BingDesktop.exe", # 必应
     r"D:\program\vscode\Microsoft VS Code\Code.exe", # vscode
     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" # chrome
 ]
