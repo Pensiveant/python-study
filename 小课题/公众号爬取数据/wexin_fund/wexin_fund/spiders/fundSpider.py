@@ -9,36 +9,47 @@ from bs4 import BeautifulSoup
 
 class FundspiderSpider(scrapy.Spider):
     name = 'fundSpider'
-    nowDate = datetime.datetime.now()
-    requestParm = {
-        'op': 'ph',
-        'dt': 'kf',
-        'ft': 'gp',  # 基金类型（'all':全部，'gp':股票型，'hh':混合型,'zq':债券型,'zs':指数型，'qdii'：QDII，'lof':LOF，'fof':FOF）
-        'rs': '',
-        'gs': 0,
-        # 排序类型（'rzdf':日增长率，'zzf':近1周，'1yzf':近一月，'3yzf':近三月，'6yzf':近六月，'1nzf':近一年，
-        #          '2nzf':近两年,'3nzf':近三年,'jnzf':今年来,'lnzf':成立以来）
-        'sc': 'zzf',
-        'st': 'desc',  # 升序还是降序（'desc':降序,'asc':升序）
-        # 开始日期
-        'sd': '{}-{}-{}'.format(nowDate.year, nowDate.month, nowDate.day),
-        # 结束日期
-        'ed': '{}-{}-{}'.format(nowDate.year, nowDate.month, nowDate.day),
-        'qdii': '',
-        'tabSubtype': ',,,,,',
-        'pi': '1',  # pageIndex
-        'pn': '10',  # pageNumber
-        'dx': '1',
-        'v': '0.6265998610926615'
-    }
-    url = 'http://fund.eastmoney.com/data/rankhandler.aspx?' + \
-        '&'.join([str(key)+'='+str(value)
-                 for key, value in requestParm.items()])
-    start_urls = [url]
 
+    def start_requests(self):
+        nowDate = datetime.datetime.now()
+        filenames = {
+            'gp': '股票型',
+            'hh': '混合型',
+            'zs': '指数型',
+            'qdii': 'QDII'
+        }
+        self.fundTypeName = filenames[self.type]
+        requestParm = {
+            'op': 'ph',
+            'dt': 'kf',
+            # 基金类型（'all':全部，'gp':股票型，'hh':混合型,'zq':债券型,'zs':指数型，'qdii'：QDII，'lof':LOF，'fof':FOF）
+            'ft': self.type,
+            'rs': '',
+            'gs': 0,
+            # 排序类型（'rzdf':日增长率，'zzf':近1周，'1yzf':近一月，'3yzf':近三月，'6yzf':近六月，'1nzf':近一年，
+            #          '2nzf':近两年,'3nzf':近三年,'jnzf':今年来,'lnzf':成立以来）
+            'sc': 'zzf',
+            'st': 'desc',  # 升序还是降序（'desc':降序,'asc':升序）
+            # 开始日期
+            'sd': '{}-{}-{}'.format(nowDate.year, nowDate.month, nowDate.day),
+            # 结束日期
+            'ed': '{}-{}-{}'.format(nowDate.year, nowDate.month, nowDate.day),
+            'qdii': '',
+            'tabSubtype': ',,,,,',
+            'pi': '1',  # pageIndex
+            'pn': '10',  # pageNumber
+            'dx': '1',
+            'v': '0.6265998610926615'
+        }
+        url = 'http://fund.eastmoney.com/data/rankhandler.aspx?' + \
+            '&'.join([str(key)+'='+str(value)
+                      for key, value in requestParm.items()])
+        yield scrapy.Request(url)
+        
     def parseFund(self, response):
         meta = response.meta
         fundItem = WexinFundItem()
+        fundItem['type'] = self.fundTypeName
         fundItem['ranking'] = meta['ranking']
         fundItem['name'] = meta['name']
         fundItem['code'] = meta['code']

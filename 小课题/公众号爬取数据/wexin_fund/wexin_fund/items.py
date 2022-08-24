@@ -9,6 +9,7 @@ import scrapy
 class WexinFundItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    type=scrapy.Field() # 基金类型
     ranking=scrapy.Field() # 排名
     name=scrapy.Field() # 基金名称
     code=scrapy.Field() # 基金code
