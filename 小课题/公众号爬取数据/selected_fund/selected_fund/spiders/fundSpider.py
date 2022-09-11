@@ -33,7 +33,8 @@ class FundspiderSpider(scrapy.Spider):
     def parse(self, response):
         selecedFund = ['001809', '002420', '014191', '519212', '519191', '519185', '012148', '012149',
                        '007689', '007690', '720001', '000828', '004997', '002810', '004685', '001097',
-                       '005598', '240004', '001678', '002910', '001832', '005669', '470021', '002296', '002420']
+                       '005598', '240004', '001678', '002910', '001832', '005669', '470021', '002296',
+                       '002420', '000772', '162607']
         selecedFund = list(set(list(selecedFund)))
         data = response.text.split('{')[1].split('}')[
             0].split(':')[1].split('","')
@@ -46,13 +47,22 @@ class FundspiderSpider(scrapy.Spider):
             if code in selecedFund:
                 fundItem['code'] = item.split(',')[0]
                 fundItem['name'] = item.split(',')[1]
-                fundItem['weekGrowthRate'] = self.format_rate(item.split(',')[7])
-                fundItem['oneMothGrowthRate'] = self.format_rate(item.split(',')[8])
-                fundItem['threeMothGrowthRate'] = self.format_rate(item.split(',')[9])
-                fundItem['sixMothGrowthRate'] = self.format_rate(item.split(',')[10])
-                fundItem['oneYearGrowthRate'] = self.format_rate(item.split(',')[11])
-                fundItem['twoYearGrowthRate'] = self.format_rate(item.split(',')[12])
-                fundItem['threeYearGrowthRate'] = self.format_rate(item.split(',')[13])
-                fundItem['nowYearGrowthRate'] = self.format_rate(item.split(',')[14])
-                fundItem['setUpGrowthRate'] = self.format_rate(item.split(',')[15])
+                fundItem['weekGrowthRate'] = self.format_rate(
+                    item.split(',')[7])
+                fundItem['oneMothGrowthRate'] = self.format_rate(
+                    item.split(',')[8])
+                fundItem['threeMothGrowthRate'] = self.format_rate(
+                    item.split(',')[9])
+                fundItem['sixMothGrowthRate'] = self.format_rate(
+                    item.split(',')[10])
+                fundItem['oneYearGrowthRate'] = self.format_rate(
+                    item.split(',')[11])
+                fundItem['twoYearGrowthRate'] = self.format_rate(
+                    item.split(',')[12])
+                fundItem['threeYearGrowthRate'] = self.format_rate(
+                    item.split(',')[13])
+                fundItem['nowYearGrowthRate'] = self.format_rate(
+                    item.split(',')[14])
+                fundItem['setUpGrowthRate'] = self.format_rate(
+                    item.split(',')[15])
                 yield fundItem
